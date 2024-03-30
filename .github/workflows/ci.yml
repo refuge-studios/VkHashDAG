@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_windows:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install MinGW
+        run: |
+          choco install mingw -y
+
+      - name: Configure CMake
+        run: cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build Project
+        run: cmake --build build
+
+      - name: Package Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows Artifacts
+          path: build
